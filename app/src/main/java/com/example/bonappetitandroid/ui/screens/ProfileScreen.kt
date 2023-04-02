@@ -9,9 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,7 +33,7 @@ import com.example.linguaflow.R
 import com.example.linguaflow.profile
 
 var forgotPassword = mutableStateOf(false)
-var logIn = mutableStateOf(false)
+var logIn = mutableStateOf(true)
 var signUp = mutableStateOf(false)
 
 @Composable
@@ -234,10 +232,13 @@ fun ForgotPassword() {
         modifier = Modifier
             .fillMaxSize()
             .background(colorResource(id = R.color.black))
-            .padding(0.dp, 15.dp, 0.dp, 0.dp)
+            .padding(0.dp, 15.dp, 0.dp, 0.dp),
+        contentAlignment = Alignment.TopCenter
     ) {
         Column(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier
+                .padding(20.dp)
+                .width(300.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -247,15 +248,20 @@ fun ForgotPassword() {
 
             Text(
                 text = "Forgot Password",
-                style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Cursive)
+                style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Cursive),
+                color = Color.White
             )
 
             Spacer(modifier = Modifier.height(15.dp))
 
             TextField(
-                label = { Text(text = "Username") },
+                label = { Text(text = "Email", color = Color.White) },
                 value = username.value,
-                onValueChange = { username.value = it }
+                colors = TextFieldDefaults.textFieldColors(
+                    cursorColor = Color.White,
+                    focusedIndicatorColor = Color.White
+                ),
+                onValueChange = { username.value = it },
             )
 
             Spacer(modifier = Modifier.height(15.dp))
@@ -266,9 +272,12 @@ fun ForgotPassword() {
                     shape = RoundedCornerShape(50.dp),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp)
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = colorResource(id = R.color.button_price)
+                    )
                 ) {
-                    Text(text = "Forgot Password")
+                    Text(text = "Forgot Password", color = Color.White)
                 }
             }
         }
@@ -281,81 +290,103 @@ fun LoginPage() {
         modifier = Modifier
             .fillMaxSize()
             .background(colorResource(id = R.color.black))
-            .padding(0.dp, 15.dp, 0.dp, 0.dp)
+            .padding(0.dp, 15.dp, 0.dp, 0.dp),
+        contentAlignment = Alignment.TopCenter
     ) {
-        ClickableText(
-            text = AnnotatedString("Signup Here"),
+        Column(
             modifier = Modifier
-                .align(Alignment.Center)
-                .padding(20.dp),
-            onClick = { },
-            style = TextStyle(
-                fontSize = 14.sp,
-                fontFamily = FontFamily.Default,
-                textDecoration = TextDecoration.Underline,
-                color = colorResource(id = R.color.button_price)
-            )
-        )
-    }
-    Column(
-        modifier = Modifier.padding(20.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        val username = remember {
-            mutableStateOf(TextFieldValue())
-        }
-        val password = remember {
-            mutableStateOf(TextFieldValue())
-        }
-
-        Text(
-            text = "Login",
-            style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Cursive)
-        )
-
-        Spacer(modifier = Modifier.height(15.dp))
-
-        TextField(
-            label = { Text(text = "Username") },
-            value = username.value,
-            onValueChange = { username.value = it }
-        )
-
-        Spacer(modifier = Modifier.height(15.dp))
-
-        TextField(
-            label = { Text(text = "Password") },
-            value = password.value,
-            onValueChange = { password.value = it },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-        )
-
-        Spacer(modifier = Modifier.height(15.dp))
-
-        Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
-            Button(
-                onClick = {},
-                shape = RoundedCornerShape(50.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-            ) {
-                Text(text = "Login")
+                .padding(20.dp)
+                .width(300.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            val username = remember {
+                mutableStateOf(TextFieldValue())
             }
-        }
+            val password = remember {
+                mutableStateOf(TextFieldValue())
+            }
 
-        Spacer(modifier = Modifier.height(15.dp))
-
-        ClickableText(
-            text = AnnotatedString("Forgot Password?"),
-            onClick = { },
-            style = TextStyle(
-                fontSize = 15.sp,
-                fontFamily = FontFamily.Default
+            Text(
+                text = "Login",
+                style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Cursive),
+                color = Color.White
             )
-        )
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            TextField(
+                label = { Text(text = "Email", color = Color.White) },
+                value = username.value,
+                colors = TextFieldDefaults.textFieldColors(
+                    cursorColor = Color.White,
+                    focusedIndicatorColor = Color.White
+                ),
+                onValueChange = { username.value = it }
+            )
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            TextField(
+                label = { Text(text = "Password", color = Color.White) },
+                value = password.value,
+                colors = TextFieldDefaults.textFieldColors(
+                    cursorColor = Color.White,
+                    focusedIndicatorColor = Color.White
+                ),
+                onValueChange = { password.value = it },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+            )
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
+                Button(
+                    onClick = {},
+                    shape = RoundedCornerShape(50.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = colorResource(id = R.color.button_price)
+                    )
+                ) {
+                    Text(text = "Login", color = Color.White)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            ClickableText(
+                text = AnnotatedString("Forgot Password?"),
+                onClick = {
+                    forgotPassword.value = true
+                    logIn.value = false
+                },
+                style = TextStyle(
+                    fontSize = 15.sp,
+                    fontFamily = FontFamily.Default,
+                    color = Color.White
+                )
+            )
+            ClickableText(
+                text = AnnotatedString("Signup Here"),
+                modifier = Modifier
+                    .padding(20.dp),
+                onClick = {
+                    signUp.value = true
+                    logIn.value = false
+                },
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontFamily = FontFamily.Default,
+                    textDecoration = TextDecoration.Underline,
+                    color = colorResource(id = R.color.button_price)
+                )
+            )
+        }
     }
+
 }
 
 @Composable
@@ -364,10 +395,13 @@ fun SignUp() {
         modifier = Modifier
             .fillMaxSize()
             .background(colorResource(id = R.color.black))
-            .padding(0.dp, 15.dp, 0.dp, 0.dp)
+            .padding(0.dp, 15.dp, 0.dp, 0.dp),
+        contentAlignment = Alignment.TopCenter
     ) {
         Column(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier
+                .padding(20.dp)
+                .width(300.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -385,22 +419,43 @@ fun SignUp() {
 
             Text(
                 text = "SignUp",
-                style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Cursive)
+                style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Cursive),
+                color = Color.White
             )
 
             Spacer(modifier = Modifier.height(15.dp))
 
             TextField(
-                label = { Text(text = "Username") },
+                label = { Text(text = "ФИО", color = Color.White) },
                 value = username.value,
+                colors = TextFieldDefaults.textFieldColors(
+                    cursorColor = Color.White,
+                    focusedIndicatorColor = Color.White
+                ),
                 onValueChange = { username.value = it }
             )
 
             Spacer(modifier = Modifier.height(15.dp))
 
             TextField(
-                label = { Text(text = "Password") },
+                label = { Text(text = "Email", color = Color.White) },
+                value = username.value,
+                colors = TextFieldDefaults.textFieldColors(
+                    cursorColor = Color.White,
+                    focusedIndicatorColor = Color.White
+                ),
+                onValueChange = { username.value = it }
+            )
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            TextField(
+                label = { Text(text = "Password", color = Color.White) },
                 value = password.value,
+                colors = TextFieldDefaults.textFieldColors(
+                    cursorColor = Color.White,
+                    focusedIndicatorColor = Color.White
+                ),
                 onValueChange = { password.value = it },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
             )
@@ -408,8 +463,12 @@ fun SignUp() {
             Spacer(modifier = Modifier.height(15.dp))
 
             TextField(
-                label = { Text(text = "Password Confirmation") },
+                label = { Text(text = "Password Confirmation", color = Color.White) },
                 value = passwordConfirm.value,
+                colors = TextFieldDefaults.textFieldColors(
+                    cursorColor = Color.White,
+                    focusedIndicatorColor = Color.White
+                ),
                 onValueChange = { passwordConfirm.value = it },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
             )
@@ -422,11 +481,29 @@ fun SignUp() {
                     shape = RoundedCornerShape(50.dp),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp)
+                        .height(50.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = colorResource(id = R.color.button_price)
+                    )
                 ) {
-                    Text(text = "SignUp")
+                    Text(text = "SignUp", color = Color.White)
                 }
             }
+            ClickableText(
+                text = AnnotatedString("LogIn"),
+                modifier = Modifier
+                    .padding(20.dp),
+                onClick = {
+                    signUp.value = false
+                    logIn.value = true
+                },
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontFamily = FontFamily.Default,
+                    textDecoration = TextDecoration.Underline,
+                    color = colorResource(id = R.color.button_price)
+                )
+            )
         }
     }
 }

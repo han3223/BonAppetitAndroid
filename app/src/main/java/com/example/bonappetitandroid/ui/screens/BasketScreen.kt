@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -276,12 +277,9 @@ fun OrderEmpty() {
                 modifier = Modifier.size(250.dp)
             )
             Text(
-                text = "Вы пока ничего не заказали",
-                fontSize = 10.em,
+                text = "Ой, вы пока ничего не заказали",
+                style = TextStyle(fontSize = 30.sp, fontFamily = FontFamily.Cursive),
                 color = Color.White,
-                fontFamily = FontFamily.SansSerif,
-                fontStyle = FontStyle(1),
-                textAlign = TextAlign.Center
             )
         }
     }
