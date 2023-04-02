@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.example.linguaflow.R
-import com.example.linguaflow.profile
+import com.example.bonappetitandroid.profile
 
 var forgotPassword = mutableStateOf(false)
 var logIn = mutableStateOf(true)
@@ -409,6 +409,10 @@ fun SignUp() {
                 mutableStateOf(TextFieldValue())
             }
 
+            val email = remember {
+                mutableStateOf(TextFieldValue())
+            }
+
             val password = remember {
                 mutableStateOf(TextFieldValue())
             }
@@ -439,12 +443,12 @@ fun SignUp() {
 
             TextField(
                 label = { Text(text = "Email", color = Color.White) },
-                value = username.value,
+                value = email.value,
                 colors = TextFieldDefaults.textFieldColors(
                     cursorColor = Color.White,
                     focusedIndicatorColor = Color.White
                 ),
-                onValueChange = { username.value = it }
+                onValueChange = { email.value = it }
             )
 
             Spacer(modifier = Modifier.height(15.dp))

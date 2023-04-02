@@ -25,8 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.example.linguaflow.R
-import com.example.linguaflow.basket
-import com.example.restaurantandroid.ui.Eat
+import com.example.bonappetitandroid.basket
+import com.example.bonappetitandroid.Eat
 
 val buttonHall = mutableStateOf(R.color.button_price)
 val buttonDelivery = mutableStateOf(R.color.white)

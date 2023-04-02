@@ -1,5 +1,3 @@
-//package com.example.linguaflow.repository.languageRepository
-//
 //import com.example.linguaflow.repository.languageRepository.table.CommonDataLast
 //import kotlinx.coroutines.Dispatchers
 //import org.jetbrains.exposed.sql.Database

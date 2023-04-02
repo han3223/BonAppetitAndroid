@@ -1,8 +1,8 @@
-package com.example.linguaflow.ui.viewModels
+package com.example.bonappetitandroid.ui.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.linguaflow.repository.languageRepository.SupabaseDataClient
+import com.example.bonappetitandroid.repository.languageRepository.client.dataClient.SupabaseDataClientProfile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -17,7 +17,7 @@ data class MainLearningState(
 
 @Single
 class MainLearningViewModel(
-    private val SupabaseDataClient: SupabaseDataClient
+    private val SupabaseDataClientProfile: SupabaseDataClientProfile
 ): ViewModel(), KoinComponent {
     private val _mainLearningState = MutableStateFlow(MainLearningState())
     val mainLearningState = _mainLearningState.asStateFlow()
@@ -27,14 +27,14 @@ class MainLearningViewModel(
             println("3")
 
             _mainLearningState.update {
-                it.copy(text = SupabaseDataClient.getCommonData()[0].string)
+                it.copy(text = SupabaseDataClientProfile.getProfileData()[0].FIO)
             }
             println(_mainLearningState.value.text)
         }
     }
     fun addData() {
         viewModelScope.launch {
-            SupabaseDataClient.addData()
+            SupabaseDataClientProfile.addProfileData()
         }
     }
 }

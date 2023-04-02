@@ -1,4 +1,4 @@
-package com.example.restaurantandroid.ui
+package com.example.bonappetitandroid
 
 import com.example.linguaflow.R
 

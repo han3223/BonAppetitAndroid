@@ -1,4 +1,4 @@
-package com.example.linguaflow.di
+package com.example.bonappetitandroid.di
 
 import android.app.Application
 import org.koin.android.ext.koin.androidContext
@@ -6,7 +6,7 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.context.startKoin
-import org.koin.ksp.generated.defaultModule
+//import org.koin.ksp.generated.defaultModule
 
 class KoinApp : Application() {
     override fun onCreate() {
@@ -14,7 +14,7 @@ class KoinApp : Application() {
         startKoin {
             androidLogger()
             androidContext(this@KoinApp)
-            modules(defaultModule)
+//            modules(defaultModule)
         }
     }
 }

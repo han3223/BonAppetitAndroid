@@ -1,4 +1,4 @@
-package com.example.linguaflow.ui.theme
+package com.example.bonappetitandroid.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme

@@ -1,4 +1,4 @@
-package com.example.linguaflow.ui.theme
+package com.example.bonappetitandroid.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

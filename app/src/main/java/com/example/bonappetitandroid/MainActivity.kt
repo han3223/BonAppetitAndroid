@@ -1,4 +1,4 @@
-package com.example.linguaflow
+package com.example.bonappetitandroid
 
 import android.annotation.SuppressLint
 import android.os.Build
@@ -25,8 +25,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.restaurantandroid.ui.Eat
-import com.example.restaurantandroid.ui.NavHostController
+import com.example.linguaflow.R
 import com.example.restaurantandroid.ui.screens.*
 import kotlinx.coroutines.delay
 

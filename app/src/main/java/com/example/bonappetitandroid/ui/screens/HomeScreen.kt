@@ -20,10 +20,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import com.example.linguaflow.R
-import com.example.linguaflow.colorText
-import com.example.linguaflow.eat
-import com.example.linguaflow.showDialog
-import com.example.restaurantandroid.ui.Eat
+import com.example.bonappetitandroid.colorText
+import com.example.bonappetitandroid.eat
+import com.example.bonappetitandroid.showDialog
+import com.example.bonappetitandroid.Eat
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 

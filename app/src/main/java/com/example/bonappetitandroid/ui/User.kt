@@ -1,4 +1,4 @@
-package com.example.linguaflow.ui
+package com.example.bonappetitandroid.ui
 
 data class User(
     val id : Int,

@@ -1,6 +1,6 @@
 //package com.example.linguaflow.repository.languageRepository
 //
-//import com.example.linguaflow.repository.languageRepository.LanguageDatabaseConnection.dbQuery
+//import LanguageDatabaseConnection.dbQuery
 //import com.example.linguaflow.repository.languageRepository.table.CommonData
 //import com.example.linguaflow.repository.languageRepository.table.CommonDataLast
 //import org.koin.core.annotation.Single
