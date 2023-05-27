@@ -23,7 +23,7 @@ class SupabaseProfileClient : SupabaseDataClientProfile {
 
 
     override suspend fun getProfileData() : List<ProfileInfo> {
-        val result = client.postgrest["public", "Test"].select().decodeList<ProfileInfo>()
+        val result = client.postgrest["public", "Profile"].select().decodeList<ProfileInfo>()
         return result
     }
 
