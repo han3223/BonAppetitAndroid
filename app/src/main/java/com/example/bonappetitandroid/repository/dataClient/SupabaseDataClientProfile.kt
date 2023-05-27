@@ -1,4 +1,4 @@
-package com.example.bonappetitandroid.repository.languageRepository.client.dataClient
+package com.example.bonappetitandroid.repository.dataClient
 
 import com.example.bonappetitandroid.dto.ProfileInfo
 

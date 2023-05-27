@@ -1,7 +1,7 @@
-package com.example.bonappetitandroid.repository.languageRepository.client
+package com.example.bonappetitandroid.repository.client
 
 import com.example.bonappetitandroid.dto.OrderInfo
-import com.example.bonappetitandroid.repository.languageRepository.client.dataClient.SupabaseDataClientOrder
+import com.example.bonappetitandroid.repository.dataClient.SupabaseDataClientOrder
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.plugins.standaloneSupabaseModule
 import io.github.jan.supabase.postgrest.Postgrest

@@ -1,13 +1,11 @@
-package com.example.bonappetitandroid.repository.languageRepository.client
+package com.example.bonappetitandroid.repository.client
 
 import com.example.bonappetitandroid.dto.ProfileInfo
-import com.example.bonappetitandroid.repository.languageRepository.client.dataClient.SupabaseDataClientProfile
-import io.github.jan.supabase.annotiations.SupabaseExperimental
+import com.example.bonappetitandroid.repository.dataClient.SupabaseDataClientProfile
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.plugins.standaloneSupabaseModule
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.postgrest
-import io.github.jan.supabase.postgrest.query.PostgrestResult
 import org.koin.core.annotation.Single
 
 

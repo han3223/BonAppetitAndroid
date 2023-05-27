@@ -103,8 +103,8 @@ fun Profile() {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Column() {
-                        Text(text = "Важенин Иван", color = Color.White, fontSize = 6.em)
-                        Text(text = "Анатольевич", color = Color.White, fontSize = 6.em)
+                        Text(text = "", color = Color.White, fontSize = 6.em)
+                        Text(text = "", color = Color.White, fontSize = 6.em)
                     }
 
                     Image(
@@ -277,7 +277,7 @@ fun ForgotPassword() {
                         backgroundColor = colorResource(id = R.color.button_price)
                     )
                 ) {
-                    Text(text = "Forgot Password", color = Color.White)
+                    Text(text = "Забыли пароль", color = Color.White)
                 }
             }
         }
@@ -351,14 +351,14 @@ fun LoginPage() {
                         backgroundColor = colorResource(id = R.color.button_price)
                     )
                 ) {
-                    Text(text = "Login", color = Color.White)
+                    Text(text = "Войти", color = Color.White)
                 }
             }
 
             Spacer(modifier = Modifier.height(15.dp))
 
             ClickableText(
-                text = AnnotatedString("Forgot Password?"),
+                text = AnnotatedString("Забыли пароль?"),
                 onClick = {
                     forgotPassword.value = true
                     logIn.value = false
@@ -370,7 +370,7 @@ fun LoginPage() {
                 )
             )
             ClickableText(
-                text = AnnotatedString("Signup Here"),
+                text = AnnotatedString("Зарегистрироваться"),
                 modifier = Modifier
                     .padding(20.dp),
                 onClick = {
@@ -391,6 +391,7 @@ fun LoginPage() {
 
 @Composable
 fun SignUp() {
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -454,7 +455,7 @@ fun SignUp() {
             Spacer(modifier = Modifier.height(15.dp))
 
             TextField(
-                label = { Text(text = "Password", color = Color.White) },
+                label = { Text(text = "Введите пароль", color = Color.White) },
                 value = password.value,
                 colors = TextFieldDefaults.textFieldColors(
                     cursorColor = Color.White,
@@ -467,7 +468,7 @@ fun SignUp() {
             Spacer(modifier = Modifier.height(15.dp))
 
             TextField(
-                label = { Text(text = "Password Confirmation", color = Color.White) },
+                label = { Text(text = "Подтвердите пароль", color = Color.White) },
                 value = passwordConfirm.value,
                 colors = TextFieldDefaults.textFieldColors(
                     cursorColor = Color.White,
@@ -490,11 +491,11 @@ fun SignUp() {
                         backgroundColor = colorResource(id = R.color.button_price)
                     )
                 ) {
-                    Text(text = "SignUp", color = Color.White)
+                    Text(text = "Зарегистрироваться", color = Color.White)
                 }
             }
             ClickableText(
-                text = AnnotatedString("LogIn"),
+                text = AnnotatedString("Войти"),
                 modifier = Modifier
                     .padding(20.dp),
                 onClick = {

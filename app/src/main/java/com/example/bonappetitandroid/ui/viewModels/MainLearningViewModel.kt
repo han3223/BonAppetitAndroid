@@ -2,7 +2,7 @@ package com.example.bonappetitandroid.ui.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.bonappetitandroid.repository.languageRepository.client.dataClient.SupabaseDataClientProfile
+import com.example.bonappetitandroid.repository.dataClient.SupabaseDataClientProfile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -22,7 +22,7 @@ class MainLearningViewModel(
     private val _mainLearningState = MutableStateFlow(MainLearningState())
     val mainLearningState = _mainLearningState.asStateFlow()
 
-    fun getCommonData() {
+    fun getProfile() {
         viewModelScope.launch {
             println("3")
 
@@ -32,7 +32,7 @@ class MainLearningViewModel(
             println(_mainLearningState.value.text)
         }
     }
-    fun addData() {
+    fun addProfile() {
         viewModelScope.launch {
             SupabaseDataClientProfile.addProfileData()
         }

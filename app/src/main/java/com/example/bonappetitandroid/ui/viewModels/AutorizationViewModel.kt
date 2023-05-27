@@ -13,7 +13,9 @@ data class AuthorizationState(
 )
 
 @Single
-class AutorizationViewModel: ViewModel() {
+class AutorizationViewModel(
+): ViewModel() {
+
     private val _authState = MutableStateFlow(AuthorizationState())
     val authState = _authState.asStateFlow()
     fun setLogin(value: String) {
