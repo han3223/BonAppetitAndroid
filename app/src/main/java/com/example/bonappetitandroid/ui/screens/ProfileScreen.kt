@@ -308,7 +308,7 @@ fun LoginPage() {
             }
 
             Text(
-                text = "Login",
+                text = "Логин",
                 style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Cursive),
                 color = Color.White
             )
@@ -328,7 +328,7 @@ fun LoginPage() {
             Spacer(modifier = Modifier.height(15.dp))
 
             TextField(
-                label = { Text(text = "Password", color = Color.White) },
+                label = { Text(text = "Пароль", color = Color.White) },
                 value = password.value,
                 colors = TextFieldDefaults.textFieldColors(
                     cursorColor = Color.White,
@@ -391,7 +391,6 @@ fun LoginPage() {
 
 @Composable
 fun SignUp() {
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -423,7 +422,7 @@ fun SignUp() {
             }
 
             Text(
-                text = "SignUp",
+                text = "Регистрация",
                 style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Cursive),
                 color = Color.White
             )

@@ -1,6 +1,6 @@
 package com.example.bonappetitandroid.repository.client
 
-import com.example.bonappetitandroid.dto.ProfileInfo
+import com.example.bonappetitandroid.dto.Profile
 import com.example.bonappetitandroid.repository.dataClient.SupabaseDataClientProfile
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.plugins.standaloneSupabaseModule
@@ -22,13 +22,12 @@ class SupabaseProfileClient : SupabaseDataClientProfile {
     private val mypostgr = standaloneSupabaseModule(Postgrest, url = supabaseUrl, apiKey = supabaseKey)
 
 
-    override suspend fun getProfileData() : List<ProfileInfo> {
-        val result = client.postgrest["public", "Profile"].select().decodeList<ProfileInfo>()
+    override suspend fun getProfileData() : List<Profile> {
+        val result = client.postgrest["public", "Profile"].select().decodeList<Profile>()
         return result
     }
-
     override suspend fun addProfileData() {
-        val insert = client.postgrest["public", "Profile"].insert(ProfileInfo)
+        val insert = client.postgrest["public", "Profile"].insert(Profile)
     }
 
     override suspend fun deleteProfileData() {
