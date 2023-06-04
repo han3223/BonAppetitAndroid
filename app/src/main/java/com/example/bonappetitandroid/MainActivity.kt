@@ -26,9 +26,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.bonappetitandroid.ui.screens.BasketScreen
+import com.example.bonappetitandroid.ui.screens.HomeScreen
 import com.example.bonappetitandroid.ui.screens.ProfileScreen
 import com.example.linguaflow.R
-import com.example.restaurantandroid.ui.screens.*
+import com.example.bonappetitandroid.ui.screens.*
 import kotlinx.coroutines.delay
 
 

@@ -1,4 +1,4 @@
-package com.example.restaurantandroid.ui.screens
+package com.example.bonappetitandroid.ui.screens
 
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
@@ -24,8 +24,8 @@ import com.example.bonappetitandroid.colorText
 import com.example.bonappetitandroid.eat
 import com.example.bonappetitandroid.showDialog
 import com.example.bonappetitandroid.Eat
-import com.example.bonappetitandroid.ui.screens.order
-import com.example.bonappetitandroid.ui.screens.price
+import com.example.bonappetitandroid.dto.Category
+import com.example.bonappetitandroid.dto.Food
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -36,6 +36,7 @@ val w = mutableStateOf(
 val color = mutableStateOf(R.color.black)
 val countEat = mutableStateListOf<Int>()
 
+
 @Composable
 fun HomeScreen() {
     val coroutineScope = rememberCoroutineScope()
@@ -45,7 +46,10 @@ fun HomeScreen() {
 
     val listScrollY = mutableListOf<Float>()
     val listScrollX = mutableListOf<Float>()
-
+    val listFoodSort = mutableListOf<Food>()
+    val realCategory = mutableListOf<Category>()
+//
+//    val categories = SupabaseFoodClient.INSTANCE.getAllCategories()
 
 
     Column() {
@@ -241,7 +245,7 @@ fun HomeScreen() {
                                                 contentScale = ContentScale.FillBounds
                                             )
                                             Text(
-                                                "каллорийность - ${item.calories!!} ккал \nбелки - 00г, жиры - 00г, углеводы - 00г",
+                                                "калорийность - ${item.calories!!} ккал \nбелки - 00г, жиры - 00г, углеводы - 00г",
                                                 fontSize = 3.em,
                                                 color = Color.White
                                             )
