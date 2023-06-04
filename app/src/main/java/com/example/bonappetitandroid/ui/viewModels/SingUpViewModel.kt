@@ -1,5 +1,8 @@
 package com.example.bonappetitandroid.ui.viewModels
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bonappetitandroid.repository.dataClient.SupabaseDataClientProfile
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -43,7 +46,7 @@ class SingUpViewModel(
         }
     }
 
-    suspend fun registration(email: String, password: String) {
+    suspend fun registration(email: MutableState<TextFieldValue>, password: String) {
         if(singUpState.value.email.equals(SupabaseDataClientProfile.getEmail()) && singUpState.value.password.equals(SupabaseDataClientProfile.getPassword())) {
             SupabaseDataClientProfile.addProfileData()
         }

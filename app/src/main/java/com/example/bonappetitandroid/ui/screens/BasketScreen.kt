@@ -214,7 +214,7 @@ fun BasketScreen() {
                                                             contentScale = ContentScale.FillBounds
                                                         )
                                                         Text(
-                                                            "каллорийность - ${item.calories!!} ккал \nбелки - 00г, жиры - 00г, углеводы - 00г",
+                                                            "калорийность - ${item.calories!!} ккал \nбелки - 00г, жиры - 00г, углеводы - 00г",
                                                             fontSize = 3.em,
                                                             color = Color.White
                                                         )
@@ -277,7 +277,7 @@ fun OrderEmpty() {
                 modifier = Modifier.size(250.dp)
             )
             Text(
-                text = "Ой, вы пока ничего не заказали",
+                text = "Вы пока что ничего не заказали",
                 style = TextStyle(fontSize = 30.sp, fontFamily = FontFamily.Cursive),
                 color = Color.White,
             )

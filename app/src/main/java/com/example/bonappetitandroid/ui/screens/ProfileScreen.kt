@@ -31,8 +31,9 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.example.linguaflow.R
 import com.example.bonappetitandroid.profile
-import com.example.bonappetitandroid.repository.dataClient.SupabaseDataClientProfile
-import com.example.bonappetitandroid.ui.viewModels.AutorizationViewModel
+import com.example.bonappetitandroid.ui.viewModels.AuthorizationViewModel
+import com.example.bonappetitandroid.ui.viewModels.RegistrationState
+import com.example.bonappetitandroid.ui.viewModels.SingUpViewModel
 
 var forgotPassword = mutableStateOf(false)
 var logIn = mutableStateOf(true)
@@ -483,7 +484,9 @@ fun SignUp() {
 
             Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
                 Button(
-                    onClick = {},
+                    onClick = {
+                        val signUpViewModel: SingUpViewModel
+                    },
                     shape = RoundedCornerShape(50.dp),
                     modifier = Modifier
                         .fillMaxWidth()

@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Single
-import org.koin.core.component.KoinComponent
 
 
 data class AuthorizationState(
@@ -17,7 +16,7 @@ data class AuthorizationState(
 )
 
 @Single
-class AutorizationViewModel(
+class AuthorizationViewModel(
     private val SupabaseDataClientProfile: SupabaseDataClientProfile
 ): ViewModel() {
     private val _authState = MutableStateFlow(AuthorizationState())
@@ -35,12 +34,14 @@ class AutorizationViewModel(
 
 
 
-//    fun getProfile(email: String, password: String) {
-//        viewModelScope.launch {
-//            _authState.update {
-//                it.copy(email = SupabaseDataClientProfile.getProfileData()[0].email)
-//                it.copy(password = SupabaseDataClientProfile.getProfileData()[1].password)
-//            }
-//        }
-//    }
+    fun getProfile(email: String, password: String) {
+        viewModelScope.launch {
+            _authState.update {
+                it.copy(email = SupabaseDataClientProfile.getProfileData()[0].email)
+                it.copy(password = SupabaseDataClientProfile.getProfileData()[1].password)
+            }
+        }
+    }
+
+
 }
