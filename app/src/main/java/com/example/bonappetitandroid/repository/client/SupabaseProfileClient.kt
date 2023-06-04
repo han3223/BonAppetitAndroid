@@ -30,6 +30,17 @@ class SupabaseProfileClient : SupabaseDataClientProfile {
         val insert = client.postgrest["public", "Profile"].insert(Profile)
     }
 
+    override suspend fun getEmail() : List<Profile> {
+        val result = client.postgrest["public", "profile"].select("email").decodeList<Profile>()
+        return result
+    }
+
+    override suspend fun getPassword(): List<Profile> {
+        val result = client.postgrest["public", "profile"].select("password").decodeList<Profile>()
+        return result
+    }
+
+
     override suspend fun deleteProfileData() {
         val delete = client.postgrest["Public", "Profile"].delete {
 

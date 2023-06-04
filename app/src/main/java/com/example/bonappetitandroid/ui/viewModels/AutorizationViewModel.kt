@@ -35,13 +35,12 @@ class AutorizationViewModel(
 
 
 
-    fun getProfile(email: String, password: String) {
-        viewModelScope.launch {
-            _authState.update {
-//                TODO:
-                it.copy(email = SupabaseDataClientProfile.getProfileData()[0].email)
-                it.copy(password = SupabaseDataClientProfile.getProfileData()[1].password)
-            }
-        }
-    }
+//    fun getProfile(email: String, password: String) {
+//        viewModelScope.launch {
+//            _authState.update {
+//                it.copy(email = SupabaseDataClientProfile.getProfileData()[0].email)
+//                it.copy(password = SupabaseDataClientProfile.getProfileData()[1].password)
+//            }
+//        }
+//    }
 }

@@ -111,7 +111,7 @@ fun BottomNavigationBar() {
                 alwaysShowLabel = true,
                 selected = item.route == selectedBottomBar.value,
                 onClick = {
-                    if (item.title == "Дом") {
+                    if (item.title == "Меню") {
                         profile.value = false
                         basket.value = false
                         home.value = true

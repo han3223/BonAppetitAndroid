@@ -31,6 +31,8 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.example.linguaflow.R
 import com.example.bonappetitandroid.profile
+import com.example.bonappetitandroid.repository.dataClient.SupabaseDataClientProfile
+import com.example.bonappetitandroid.ui.viewModels.AutorizationViewModel
 
 var forgotPassword = mutableStateOf(false)
 var logIn = mutableStateOf(true)

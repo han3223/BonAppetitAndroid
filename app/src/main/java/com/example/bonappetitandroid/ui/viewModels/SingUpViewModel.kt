@@ -4,7 +4,6 @@ import com.example.bonappetitandroid.repository.dataClient.SupabaseDataClientPro
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.flow.updateAndGet
 import org.koin.core.annotation.Single
 
 data class RegistrationState(
@@ -44,7 +43,9 @@ class SingUpViewModel(
         }
     }
 
-    suspend fun addProfile() {
-        SupabaseDataClientProfile.addProfileData()
+    suspend fun registration(email: String, password: String) {
+        if(singUpState.value.email.equals(SupabaseDataClientProfile.getEmail()) && singUpState.value.password.equals(SupabaseDataClientProfile.getPassword())) {
+            SupabaseDataClientProfile.addProfileData()
+        }
     }
 }

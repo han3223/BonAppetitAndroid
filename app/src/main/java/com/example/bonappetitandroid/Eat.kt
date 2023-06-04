@@ -137,8 +137,8 @@ sealed class Eat(var route: String?, var icon: Int?, var title: String?, var des
 
             class Fish {
                 object Line : Eat("lineSubcategory", R.drawable.line, "Рыбные", null, null, null, 0)
-//                object HotFishSnack1 :
-//                    Eat("hot_fish_snack1", R.drawable.hot_fish_snack1, "Филе сибаса", "Филе рыбы сибаса с брокколи, яйцом и сыром", 260, 340, 0)
+                object HotFishSnack1 :
+                    Eat("hot_fish_snack1", R.drawable.hot_fish_snack1, "Филе сибаса", "Филе рыбы сибаса с брокколи, яйцом и сыром", 260, 340, 0)
                 object HotFishSnack2 :
                     Eat("hot_fish_snack2", R.drawable.hot_fish_snack2, "Креветки на шампуре", "Креветки на шампуре, в гриле и с чесноком", 210, 290, 0)
 
@@ -150,7 +150,7 @@ sealed class Eat(var route: String?, var icon: Int?, var title: String?, var des
 
                 var item = mutableListOf(
                     Line,
-//                    HotFishSnack1,
+                    HotFishSnack1,
                     HotFishSnack2,
                     HotFishSnack3,
                     HotFishSnack4
