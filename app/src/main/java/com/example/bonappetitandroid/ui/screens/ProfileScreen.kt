@@ -1,4 +1,4 @@
-package com.example.restaurantandroid.ui.screens
+package com.example.bonappetitandroid.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -31,8 +31,6 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.example.linguaflow.R
 import com.example.bonappetitandroid.profile
-import com.example.bonappetitandroid.ui.viewModels.AuthorizationViewModel
-import com.example.bonappetitandroid.ui.viewModels.RegistrationState
 import com.example.bonappetitandroid.ui.viewModels.SingUpViewModel
 
 var forgotPassword = mutableStateOf(false)

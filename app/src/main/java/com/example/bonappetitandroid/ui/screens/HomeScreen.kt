@@ -24,6 +24,8 @@ import com.example.bonappetitandroid.colorText
 import com.example.bonappetitandroid.eat
 import com.example.bonappetitandroid.showDialog
 import com.example.bonappetitandroid.Eat
+import com.example.bonappetitandroid.ui.screens.order
+import com.example.bonappetitandroid.ui.screens.price
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
