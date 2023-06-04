@@ -282,6 +282,20 @@ fun ForgotPassword() {
                 ) {
                     Text(text = "Забыли пароль", color = Color.White)
                 }
+//                Button(
+//                    onClick = {
+//
+//                    },
+//                    shape = RoundedCornerShape(50.dp),
+//                    modifier = Modifier
+//                        .fillMaxHeight()
+//                        .height(50.dp),
+//                    colors = ButtonDefaults.buttonColors(
+//                        backgroundColor = colorResource(id = R.color.button_price)
+//                    )
+//                ) {
+//                    Text(text = "Вернуться назад", color = Color.White)
+//                }
             }
         }
     }
@@ -384,7 +398,7 @@ fun LoginPage() {
                     fontSize = 14.sp,
                     fontFamily = FontFamily.Default,
                     textDecoration = TextDecoration.Underline,
-                    color = colorResource(id = R.color.button_price)
+                    color = colorResource(id = R.color.signup)
                 )
             )
         }
@@ -473,8 +487,8 @@ fun SignUp() {
                 label = { Text(text = "Подтвердите пароль", color = Color.White) },
                 value = passwordConfirm.value,
                 colors = TextFieldDefaults.textFieldColors(
-                    cursorColor = Color.White,
-                    focusedIndicatorColor = Color.White
+                    cursorColor = Color.Black,
+                    focusedIndicatorColor = Color.Black
                 ),
                 onValueChange = { passwordConfirm.value = it },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
