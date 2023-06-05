@@ -1,8 +1,12 @@
 package com.example.restaurantandroid.ui.screens
 
+import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -14,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.*
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -24,6 +29,7 @@ import com.example.bonappetitandroid.colorText
 import com.example.bonappetitandroid.eat
 import com.example.bonappetitandroid.showDialog
 import com.example.bonappetitandroid.Eat
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -34,17 +40,30 @@ val w = mutableStateOf(
 val color = mutableStateOf(R.color.black)
 val countEat = mutableStateListOf<Int>()
 
+val colorTextClick = mutableStateOf(-1)
+
 @Composable
-fun HomeScreen() {
+fun HomeScreen(menuItems: List<Eat>) {
     val coroutineScope = rememberCoroutineScope()
+
     val scrollStateY = rememberScrollState()
     val scrollStateX = rememberScrollState()
     var scrollToPosition by remember { mutableStateOf(0F) }
+    var scroll = rememberLazyListState()
 
     val listScrollY = mutableListOf<Float>()
     val listScrollX = mutableListOf<Float>()
+    var indx by remember {
+        mutableStateOf(0)
+    }
+    val itemSize = 170.dp
+    val lineCategory = 30.dp
+    val lineSubCategory = 20.dp
 
-
+    val density = LocalDensity.current
+    val itemSizePx = with(density) { itemSize.toPx() }
+    val lineCategoryPx = with(density) { itemSize.toPx() }
+    val lineSubCategoryPx = with(density) { itemSize.toPx() }
 
     Column() {
         Box(
@@ -90,11 +109,21 @@ fun HomeScreen() {
                                         ),
                                         onClick = {
                                             coroutineScope.launch {
-                                                scrollStateY.animateScrollTo(
-                                                    listScrollY[item.price ?: 0].roundToInt(),
-                                                    tween(2000),
-                                                )
-
+                                                var countCategory = 0
+                                                var countSubcategory = 0
+                                                var countEat = 0
+                                                for (i in indx..index) {
+                                                    when (eat[i].route) {
+                                                        "lineCategory" -> countCategory += 1
+                                                        "lineSubcategory" -> countSubcategory += 1
+                                                        else -> countEat +=1
+                                                    }
+                                                }
+                                                scroll.animateScrollBy((countEat * 535f + countCategory * 170f + countSubcategory * 170f), tween(2000))
+//                                                scrollStateY.animateScrollTo(
+//                                                    listScrollY[item.price ?: 0].roundToInt(),
+//                                                    tween(2000),
+//                                                )
                                             }
                                             colorText.value = index
                                         },
@@ -106,9 +135,9 @@ fun HomeScreen() {
                                             .padding(10.dp, 0.dp, 0.dp, 0.dp),
                                     ) {
                                         if (colorText.value == index)
-                                            Text(text = item.title ?: "null", color = Color.White)
+                                            Text(text = item.title, color = Color.White)
                                         else
-                                            Text(text = item.title ?: "null", color = Color.Gray)
+                                            Text(text = item.title, color = Color.Gray)
                                     }
                                 }
                             }
@@ -126,127 +155,130 @@ fun HomeScreen() {
             else
                 w.value = Modifier.width(420.dp)
         }
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(0.dp, 0.dp, 0.dp, 50.dp)
-                .verticalScroll(scrollStateY)
-        ) {
-            Column() {
-                eat.forEachIndexed { index, item ->
-                    countEat.add(0)
-                    when (item.route) {
-                        "lineCategory" -> {
-                            Text(
-                                item.title!!,
-                                textAlign = TextAlign.Start,
-                                modifier = Modifier
-                                    .padding(20.dp, 0.dp, 0.dp, 0.dp)
-                                    .onGloballyPositioned { coordinates ->
-                                        listScrollY[item.price ?: 0] =
-                                            coordinates.positionInParent().y
-                                        if (coordinates.positionInRoot().y <= 2200.0f) {
-                                            coroutineScope.launch {
-                                                colorText.value = index
-                                                scrollStateX.animateScrollTo(
-                                                    listScrollX[item.price ?: 0].roundToInt(),
-                                                    tween(1000)
-                                                )
-                                            }
+//        Box(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(0.dp, 0.dp, 0.dp, 50.dp)
+//                .verticalScroll(scrollStateY)
+//        ) {
+//
+//        }
+        LazyColumn(state = scroll, modifier = Modifier.height(1000.dp)) {
+            itemsIndexed(eat) { index, item ->
+                countEat.add(0)
+                when (item.route) {
+                    "lineCategory" -> {
+                        Text(
+                            item.title,
+                            textAlign = TextAlign.Start,
+                            modifier = Modifier
+                                .padding(20.dp, 0.dp, 0.dp, 0.dp)
+                                .onGloballyPositioned { coordinates ->
+                                    listScrollY[item.price ?: 0] =
+                                        coordinates.positionInParent().y
+                                    if (coordinates.positionInParent().y == 0.0f)
+                                    if (coordinates.positionInRoot().y <= 2200.0f) {
+                                        indx = index
+                                        coroutineScope.launch {
+                                            colorText.value = index
+                                            scrollStateX.animateScrollTo(
+                                                listScrollX[item.price ?: 0].roundToInt(),
+                                                tween(1000)
+                                            )
                                         }
-                                    },
-                                fontSize = 6.em,
-                                color = Color.White
-                            )
-                            Box(
+                                    }
+                                },
+                            fontSize = 6.em,
+                            color = Color.White
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(0.dp, 0.dp, 0.dp, 10.dp),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            Image(
+                                painter = painterResource(id = item.icon!!),
+                                contentDescription = item.title,
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(0.dp, 0.dp, 0.dp, 10.dp),
-                                contentAlignment = Alignment.CenterStart
-                            ) {
-                                Image(
-                                    painter = painterResource(id = item.icon!!),
-                                    contentDescription = item.title,
-                                    modifier = Modifier
-                                        .size(350.dp, 10.dp)
-                                        .clip(RoundedCornerShape(25.dp)),
-                                    alignment = Alignment.Center,
-                                    contentScale = ContentScale.FillBounds
-                                )
-                            }
+                                    .size(350.dp, 10.dp)
+                                    .clip(RoundedCornerShape(25.dp)),
+                                alignment = Alignment.Center,
+                                contentScale = ContentScale.FillBounds
+                            )
+                        }
 
-                        }
-                        "lineSubcategory" -> {
-                            Text(
-                                item.title!!,
-                                textAlign = TextAlign.Start,
-                                modifier = Modifier.padding(20.dp, 0.dp, 0.dp, 0.dp),
-                                color = Color.White
-                            )
-                            Box(
-                                modifier = Modifier.fillMaxWidth(),
-                                contentAlignment = Alignment.CenterStart
-                            ) {
-                                Image(
-                                    painter = painterResource(id = item.icon!!),
-                                    contentDescription = item.title,
-                                    modifier = Modifier
-                                        .size(250.dp, 10.dp)
-                                        .clip(RoundedCornerShape(25.dp)),
-                                    alignment = Alignment.Center,
-                                    contentScale = ContentScale.FillBounds
-                                )
-                            }
-                        }
-                        else -> {
-                            Spacer(modifier = Modifier.size(15.dp))
-                            Column(
+                    }
+                    "lineSubcategory" -> {
+                        Text(
+                            item.title!!,
+                            textAlign = TextAlign.Start,
+                            modifier = Modifier.padding(20.dp, 0.dp, 0.dp, 0.dp),
+                            color = Color.White
+                        )
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            Image(
+                                painter = painterResource(id = item.icon!!),
+                                contentDescription = item.title,
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(10.dp, 10.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Column(modifier = w.value) {
-                                    Row() {
+                                    .size(250.dp, 10.dp)
+                                    .clip(RoundedCornerShape(25.dp)),
+                                alignment = Alignment.Center,
+                                contentScale = ContentScale.FillBounds
+                            )
+                        }
+                    }
+                    else -> {
+                        Spacer(modifier = Modifier.size(15.dp))
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(10.dp, 10.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Column(modifier = w.value) {
+                                Row() {
+                                    Image(
+                                        painter = painterResource(id = item.icon!!),
+                                        contentDescription = item.title,
+                                        modifier = Modifier
+                                            .size(150.dp)
+                                            .clip(RoundedCornerShape(25.dp)),
+                                        alignment = Alignment.Center,
+                                        contentScale = ContentScale.FillBounds
+                                    )
+                                    Column(modifier = Modifier.padding(10.dp)) {
+                                        Text(item.title!!, color = Color.White)
                                         Image(
-                                            painter = painterResource(id = item.icon!!),
+                                            painter = painterResource(id = R.drawable.line),
                                             contentDescription = item.title,
                                             modifier = Modifier
-                                                .size(150.dp)
+                                                .size(150.dp, 3.dp)
                                                 .clip(RoundedCornerShape(25.dp)),
                                             alignment = Alignment.Center,
                                             contentScale = ContentScale.FillBounds
                                         )
-                                        Column(modifier = Modifier.padding(10.dp)) {
-                                            Text(item.title!!, color = Color.White)
-                                            Image(
-                                                painter = painterResource(id = R.drawable.line),
-                                                contentDescription = item.title,
-                                                modifier = Modifier
-                                                    .size(150.dp, 3.dp)
-                                                    .clip(RoundedCornerShape(25.dp)),
-                                                alignment = Alignment.Center,
-                                                contentScale = ContentScale.FillBounds
-                                            )
-                                            Text(item.description!!, color = Color.White)
-                                            Image(
-                                                painter = painterResource(id = R.drawable.line),
-                                                contentDescription = item.title,
-                                                modifier = Modifier
-                                                    .size(150.dp, 3.dp)
-                                                    .clip(RoundedCornerShape(25.dp)),
-                                                alignment = Alignment.Center,
-                                                contentScale = ContentScale.FillBounds
-                                            )
-                                            Text(
-                                                "каллорийность - ${item.calories!!} ккал \nбелки - 00г, жиры - 00г, углеводы - 00г",
-                                                fontSize = 3.em,
-                                                color = Color.White
-                                            )
-                                        }
+                                        Text(item.description!!, color = Color.White)
+                                        Image(
+                                            painter = painterResource(id = R.drawable.line),
+                                            contentDescription = item.title,
+                                            modifier = Modifier
+                                                .size(150.dp, 3.dp)
+                                                .clip(RoundedCornerShape(25.dp)),
+                                            alignment = Alignment.Center,
+                                            contentScale = ContentScale.FillBounds
+                                        )
+                                        Text(
+                                            "каллорийность - ${item.calories!!} ккал \nбелки - 00г, жиры - 00г, углеводы - 00г",
+                                            fontSize = 3.em,
+                                            color = Color.White
+                                        )
                                     }
-                                    Price(item, index)
                                 }
+                                Price(item, index)
                             }
                         }
                     }
@@ -255,7 +287,9 @@ fun HomeScreen() {
         }
     }
 
+
 }
+
 
 @Composable
 fun Price(item: Eat, index: Int) {
