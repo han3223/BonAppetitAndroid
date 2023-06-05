@@ -1,19 +1,14 @@
 package com.example.bonappetitandroid
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.view.animation.OvershootInterpolator
-import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -23,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -46,15 +40,13 @@ val eat = Eat.Food().food
 
 val test = mutableStateOf(true)
 
-
-
 class MainActivity : ComponentActivity() {
-    @RequiresApi(Build.VERSION_CODES.M)
-    private var pressedTime: Long = 0
 
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             window.attributes.layoutInDisplayCutoutMode =
                 WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
@@ -86,33 +78,9 @@ class MainActivity : ComponentActivity() {
             Scaffold(
                 backgroundColor = colorResource(R.color.black)
             ) {
-                Navigation(LocalContext.current)
+                Navigation()
             }
         }
-    }
-
-    // on below line we are calling on back press method.
-    @RequiresApi(Build.VERSION_CODES.M)
-    override fun onBackPressed() {
-        // on below line we are checking if the press time is greater than 2 sec
-        if (pressedTime + 2000 > System.currentTimeMillis()) {
-            // if time is greater than 2 sec we are closing the application.
-            super.onBackPressed()
-            finish()
-        } else {
-            if (forgotPassword.value) {
-                logIn.value = true
-                forgotPassword.value = false
-            }
-            else if (signUp.value) {
-                logIn.value = true
-                signUp.value = false
-            }
-            // in else condition displaying a toast message.
-            Toast.makeText(getBaseContext(), "Press back again to exit", Toast.LENGTH_SHORT).show();
-        }
-        // on below line initializing our press time variable
-        pressedTime = System.currentTimeMillis();
     }
 }
 
@@ -170,7 +138,7 @@ fun BottomNavigationBar() {
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun Navigation(context: Context) {
+fun Navigation() {
     val navController = rememberNavController()
     NavHost(navController = navController,
         startDestination = "splash_screen") {
@@ -183,9 +151,9 @@ fun Navigation(context: Context) {
                 bottomBar = { BottomNavigationBar() },
                 backgroundColor = colorResource(R.color.black)
             ) {
-                HomeScreen(eat)
+                HomeScreen()
                 BasketScreen()
-                ProfileScreen(context)
+                ProfileScreen()
             }
         }
     }

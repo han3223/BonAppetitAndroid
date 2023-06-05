@@ -2,7 +2,7 @@ package com.example.bonappetitandroid
 
 import com.example.linguaflow.R
 
-sealed class Eat(var route: String?, var icon: Int?, var title: String, var description: String?, var calories: Int?, var price: Int?, var num: Int?) {
+sealed class Eat(var route: String?, var icon: Int?, var title: String?, var description: String?, var calories: Int?, var price: Int?, var num: Int?) {
     class Food {
         class ColdSnacks {
             object Line : Eat("lineCategory", R.drawable.line, "Холодные закуски", null, null, 0, null)
