@@ -1,6 +1,7 @@
 package com.example.bonappetitandroid.repository.client
 
 import com.example.bonappetitandroid.dto.Order
+import com.example.bonappetitandroid.dto.OrderSet
 import com.example.bonappetitandroid.repository.dataClient.SupabaseDataClientOrder
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.plugins.standaloneSupabaseModule
@@ -15,15 +16,17 @@ class SupabaseOrderClient : SupabaseDataClientOrder {
     ) {
         install(Postgrest)
     }
+    companion object {
+        val INSTANCE = SupabaseOrderClient()
+    }
 
     private val mypostgr = standaloneSupabaseModule(Postgrest, url = supabaseUrl, apiKey = supabaseKey)
 
-    override suspend fun getOrderData(): List<Order> {
-        val result = client.postgrest["public", "Order"].select().decodeList<Order>()
-        return result
+    suspend fun setOrder(order: OrderSet) {
+        client.postgrest["order"].insert(order)
     }
 
-    override suspend fun addOrderData() {
-        val insert = client.postgrest["public", "Order"].insert(Order)
+    suspend fun getOrderByProfile(idProfile: Int): List<Order> {
+        return client.postgrest["order"].select { eq("user", idProfile) }.decodeList()
     }
 }

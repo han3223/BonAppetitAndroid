@@ -1,6 +1,7 @@
 package com.example.bonappetitandroid
 
 import com.example.linguaflow.R
+import kotlinx.serialization.Serializable
 
 sealed class Eat(var route: String?, var icon: Int?, var title: String?, var description: String?, var calories: Int?, var price: Int?, var num: Int?) {
     class Food {
@@ -413,6 +414,23 @@ sealed class Eat(var route: String?, var icon: Int?, var title: String?, var des
 
 
 }
-
-
+@Serializable
+data class Food(
+    var route: String?,
+    var icon: Int?,
+    var title: String?,
+    var description: String?,
+    var calories: Int?,
+    var price: Int?,
+    var num: Int?,
+)
+@Serializable
+data class FoodWithoutIcon(
+    var route: String?,
+    var title: String?,
+    var description: String?,
+    var calories: Int?,
+    var price: Int?,
+    var num: Int?,
+)
 

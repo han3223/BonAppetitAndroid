@@ -10,4 +10,5 @@
     <color name="nav">#FF292B31</color>
     <color name="button_price">#FF414B6A</color>
     <color name="btn_active">#FF545764</color>
+    <color name="input">#FF4500</color>
 </resources>

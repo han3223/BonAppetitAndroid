@@ -1,5 +1,7 @@
 package com.example.restaurantandroid.ui.screens
 
+import android.app.Application
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -10,31 +12,46 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import com.example.bonappetitandroid.MainActivity
+import com.example.bonappetitandroid.colorText
+import com.example.bonappetitandroid.dto.Profile
+import com.example.bonappetitandroid.dto.ProfileRegistration
+import com.example.bonappetitandroid.dto.ProfileRegistrationWithoutRoleAndAddress
 import com.example.linguaflow.R
 import com.example.bonappetitandroid.profile
+import com.example.bonappetitandroid.repository.client.SupabaseProfileClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 var forgotPassword = mutableStateOf(false)
 var logIn = mutableStateOf(true)
 var signUp = mutableStateOf(false)
+val coroutineScope = CoroutineScope(Dispatchers.Main)
+val profileLogin = mutableStateOf<ProfileRegistration>(
+    ProfileRegistration(
+    "", "", "", "", "", ""
+)
+)
 
 @Composable
 fun ProfileScreen() {
@@ -86,9 +103,9 @@ fun ProfileScreen() {
         }
     }
 }
-
 @Composable
 fun Profile() {
+    val firstName = profileLogin.value.FIO.split(" ")
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -103,8 +120,8 @@ fun Profile() {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Column() {
-                        Text(text = "", color = Color.White, fontSize = 6.em)
-                        Text(text = "", color = Color.White, fontSize = 6.em)
+                        Text(text = firstName.first(), color = Color.White, fontSize = 6.em)
+                        Text(text = firstName.last(), color = Color.White, fontSize = 6.em)
                     }
 
                     Image(
@@ -128,11 +145,16 @@ fun Profile() {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "тел: 89116172604", color = Color.White, fontSize = 6.em)
+                    Text(text = "Телефон: ${profileLogin.value.telephoneNumber}",
+                        color = Color.Cyan,
+                        fontSize = 6.em,
+
+                    )
+                    print(profileLogin.value.telephoneNumber)
                 }
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Text(
-                        text = "email: ivan.vazhenin34@gmail.com",
+                        text = "Email: ${profileLogin.value.email}",
                         color = Color.White,
                         fontSize = 6.em,
                         modifier = Modifier.width(260.dp)
@@ -144,7 +166,7 @@ fun Profile() {
                         .heightIn(30.dp, 120.dp)
                 ) {
                     Text(
-                        text = "адрес доставки:\nул. Коровникова, д. 12, кв. 101",
+                        text = "Адрес доставки: ${profileLogin.value.address}",
                         color = Color.White,
                         fontSize = 6.em,
                         modifier = Modifier.width(260.dp)
@@ -223,8 +245,27 @@ fun Profile() {
             }
         }
 
+
+    }
+    Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
+        Button(
+            onClick = {
+                profile.value = false
+                logIn.value = true
+            },
+            shape = RoundedCornerShape(50.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = colorResource(id = R.color.button_price)
+            )
+        ) {
+            Text(text = "Выйти из профиля", color = Color.White)
+        }
     }
 }
+
 
 @Composable
 fun ForgotPassword() {
@@ -300,12 +341,13 @@ fun LoginPage() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val username = remember {
+            val email = remember {
                 mutableStateOf(TextFieldValue())
             }
             val password = remember {
                 mutableStateOf(TextFieldValue())
             }
+
 
             Text(
                 text = "Логин",
@@ -317,12 +359,13 @@ fun LoginPage() {
 
             TextField(
                 label = { Text(text = "Email", color = Color.White) },
-                value = username.value,
+                value = email.value,
                 colors = TextFieldDefaults.textFieldColors(
                     cursorColor = Color.White,
-                    focusedIndicatorColor = Color.White
+                    focusedIndicatorColor = Color.White,
+                    textColor = Color.White
                 ),
-                onValueChange = { username.value = it }
+                onValueChange = { email.value = it }
             )
 
             Spacer(modifier = Modifier.height(15.dp))
@@ -332,9 +375,11 @@ fun LoginPage() {
                 value = password.value,
                 colors = TextFieldDefaults.textFieldColors(
                     cursorColor = Color.White,
-                    focusedIndicatorColor = Color.White
+                    focusedIndicatorColor = Color.White,
+                    textColor = Color.White
                 ),
                 onValueChange = { password.value = it },
+                visualTransformation =  PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
             )
 
@@ -342,7 +387,27 @@ fun LoginPage() {
 
             Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
                 Button(
-                    onClick = {},
+                    onClick = {
+
+                        coroutineScope.launch {
+                            val result = SupabaseProfileClient.INSTANCE.getProfileByEmail(email.value.text)
+                            println(result)
+                            if (result == null) {
+                                println("Такого пользователя не существует")
+                            }
+                            else {
+                                profileLogin.value = ProfileRegistration(
+                                    result.FIO,
+                                    result.telephoneNumber,
+                                    result.email, result.password,
+                                    result.role,
+                                    result.address)
+                                profile.value = true
+                                logIn.value = false
+                            }
+                        }
+
+                    },
                     shape = RoundedCornerShape(50.dp),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -391,6 +456,7 @@ fun LoginPage() {
 
 @Composable
 fun SignUp() {
+    val openDialog = remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -405,26 +471,32 @@ fun SignUp() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+//            ФИО
             val username = remember {
                 mutableStateOf(TextFieldValue())
             }
-
+            val phoneNumber = remember {
+                mutableStateOf(TextFieldValue())
+            }
+//            Email
             val email = remember {
                 mutableStateOf(TextFieldValue())
             }
-
+//            Пароль
             val password = remember {
                 mutableStateOf(TextFieldValue())
             }
-
-            val passwordConfirm = remember {
-                mutableStateOf(TextFieldValue())
-            }
+////            Подтверждение пароля
+//            val passwordConfirm = remember {
+//                mutableStateOf(TextFieldValue())
+//            }
+            var showPassword = remember { mutableStateOf(value = false) }
 
             Text(
                 text = "Регистрация",
                 style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Cursive),
-                color = Color.White
+                color = Color.White,
             )
 
             Spacer(modifier = Modifier.height(15.dp))
@@ -434,7 +506,8 @@ fun SignUp() {
                 value = username.value,
                 colors = TextFieldDefaults.textFieldColors(
                     cursorColor = Color.White,
-                    focusedIndicatorColor = Color.White
+                    focusedIndicatorColor = Color.White,
+                    textColor = Color.White
                 ),
                 onValueChange = { username.value = it }
             )
@@ -442,11 +515,30 @@ fun SignUp() {
             Spacer(modifier = Modifier.height(15.dp))
 
             TextField(
+
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                label = { Text(text = "Номер телефона", color = Color.White) },
+                value = phoneNumber.value,
+                colors = TextFieldDefaults.textFieldColors(
+                    cursorColor = Color.White,
+                    focusedIndicatorColor = Color.White,
+                    textColor = Color.White,
+                ),
+                onValueChange = { phoneNumber.value = it },
+            )
+
+
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            TextField(
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 label = { Text(text = "Email", color = Color.White) },
                 value = email.value,
                 colors = TextFieldDefaults.textFieldColors(
                     cursorColor = Color.White,
-                    focusedIndicatorColor = Color.White
+                    focusedIndicatorColor = Color.White,
+                    textColor = Color.White
                 ),
                 onValueChange = { email.value = it }
             )
@@ -458,30 +550,48 @@ fun SignUp() {
                 value = password.value,
                 colors = TextFieldDefaults.textFieldColors(
                     cursorColor = Color.White,
-                    focusedIndicatorColor = Color.White
+                    focusedIndicatorColor = Color.White,
+                    textColor = Color.White
                 ),
                 onValueChange = { password.value = it },
+                visualTransformation =  PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
             )
 
             Spacer(modifier = Modifier.height(15.dp))
 
-            TextField(
-                label = { Text(text = "Подтвердите пароль", color = Color.White) },
-                value = passwordConfirm.value,
-                colors = TextFieldDefaults.textFieldColors(
-                    cursorColor = Color.White,
-                    focusedIndicatorColor = Color.White
-                ),
-                onValueChange = { passwordConfirm.value = it },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
-            )
-
-            Spacer(modifier = Modifier.height(15.dp))
+//            TextField(
+//                label = { Text(text = "Подтвердите пароль", color = Color.White) },
+//                value = passwordConfirm.value,
+//                colors = TextFieldDefaults.textFieldColors(
+//                    cursorColor = Color.White,
+//                    focusedIndicatorColor = Color.White
+//                ),
+//                onValueChange = { passwordConfirm.value = it },
+//                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+//            )
+//
+//            Spacer(modifier = Modifier.height(15.dp))
 
             Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
                 Button(
-                    onClick = {},
+                    onClick = {
+                        coroutineScope.launch {
+                            val result = SupabaseProfileClient.INSTANCE.getProfileByEmail(email.value.text)
+                            if (result == null) {
+                                registration(username.value.text, phoneNumber.value.text, email.value.text, password.value.text)
+                                profileLogin.value = ProfileRegistration(username.value.text, phoneNumber.value.text, email.value.text, password.value.text, "", "")
+                                signUp.value = false
+                                logIn.value = false
+                                profile.value = true
+                            }
+                            else {
+                                println("Такой пользователь уже существует")
+                            }
+                            println(result)
+                        }
+
+                    },
                     shape = RoundedCornerShape(50.dp),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -510,4 +620,45 @@ fun SignUp() {
             )
         }
     }
+}
+
+//private fun formatPhoneNumber(number: String): String {
+//    val digitsOnly = number.filter { it.isDigit() }
+//    val formattedNumber = buildString {
+//        append("+7 ")
+//        if (digitsOnly.length >= 1) {
+//            append("(")
+//            append(digitsOnly.take(3))
+//        }
+//        if (digitsOnly.length >= 4) {
+//            append(") ")
+//            append(digitsOnly.substring(3, 6))
+//        }
+//        if (digitsOnly.length >= 7) {
+//            append("-")
+//            append(digitsOnly.substring(6, 8))
+//        }
+//        if (digitsOnly.length >= 9) {
+//            append("-")
+//            append(digitsOnly.substring(8, 10))
+//        }
+//    }
+//    return formattedNumber
+//}
+
+suspend fun registration(username: String, telephoneNumber: String, email: String, password: String) {
+    SupabaseProfileClient.INSTANCE.addProfileWithoutAddress(ProfileRegistrationWithoutRoleAndAddress(username, telephoneNumber, email, password))
+}
+
+suspend fun loginUser(email: String, password: String) {
+    SupabaseProfileClient.INSTANCE.getProfileByEmail(email)
+}
+
+suspend fun showProfile() {
+
+}
+
+@Composable
+private fun MakeText() {
+    Toast.makeText(LocalContext.current, "Пользователя не существует", Toast.LENGTH_LONG).show()
 }
