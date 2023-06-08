@@ -390,21 +390,26 @@ fun LoginPage() {
                     onClick = {
 
                         coroutineScope.launch {
-                            val result = SupabaseProfileClient.INSTANCE.getProfileByEmail(email.value.text)
-                            println(result)
-                            if (result == null) {
-                                println("Такого пользователя не существует")
+                            try {
+                                val result = SupabaseProfileClient.INSTANCE.getProfileByEmail(email.value.text, password.value.text)
+                                if (result == null) {
+                                    println("Такого пользователя не существует")
+                                }
+                                else {
+                                    profileLogin.value = ProfileRegistration(
+                                        result.FIO,
+                                        result.telephoneNumber,
+                                        result.email, result.password,
+                                        result.role,
+                                        result.address?: "")
+                                    profile.value = true
+                                    logIn.value = false
+                                }
                             }
-                            else {
-                                profileLogin.value = ProfileRegistration(
-                                    result.FIO,
-                                    result.telephoneNumber,
-                                    result.email, result.password,
-                                    result.role,
-                                    result.address)
-                                profile.value = true
-                                logIn.value = false
+                            catch (e: Exception) {
+                                e.printStackTrace()
                             }
+
                         }
 
                     },

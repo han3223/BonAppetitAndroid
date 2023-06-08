@@ -11,7 +11,7 @@ data class Profile(val id: Int?,
                    val email: String,
                    val password: String,
                    val role: String,
-                   val address: String)
+                   val address: String?)
 
 @Serializable
 data class ProfileRegistration(
@@ -20,7 +20,7 @@ data class ProfileRegistration(
     val email: String,
     val password: String,
     val role: String,
-    val address: String
+    val address: String?
 )
 
 @Serializable
