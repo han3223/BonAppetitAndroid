@@ -73,6 +73,22 @@ class SupabaseProfileClient {
         return null
     }
 
+    suspend fun getProfileByEmail(email: String, password: String): Profile? {
+        val result = client.postgrest["profile"].select {
+            eq("email", email)
+            eq("password", password)
+        }
+
+        println(result.body.jsonArray)
+
+        if (result.body.jsonArray.isNotEmpty()) {
+            println("Пользователь существует")
+            return result.decodeSingle()
+        }
+
+        return null
+    }
+
 
     suspend fun getProfileByPhone(numberPhone: String): Profile? {
         val result = client.postgrest["profile"].select {

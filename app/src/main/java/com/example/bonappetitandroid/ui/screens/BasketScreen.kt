@@ -260,15 +260,21 @@ fun BasketScreen() {
                             Button(
                                 onClick = {
                                     coroutineScope.launch {
-                                        val json = Json.encodeToString(orderList)
-                                        println("АААААААААААААААААААААААА\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
-                                        println(profileLogin)
-                                        println(json)
-                                        val profileId = SupabaseProfileClient.INSTANCE.getProfileByEmail(profileLogin.value.email)
+                                        try {
+                                            val json = Json.encodeToString(orderList)
+                                            println("АААААААААААААААААААААААА\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+                                            println(profileLogin)
+                                            println(json)
+                                            val profileId = SupabaseProfileClient.INSTANCE.getProfileByEmail(profileLogin.value.email)
 
-                                        val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-                                        val currentDate = sdf.format(Date())
-                                        SupabaseOrderClient.INSTANCE.setOrder(OrderSet("Доставка", json, profileId?.id, price.value, currentDate))
+                                            val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
+                                            val currentDate = sdf.format(Date())
+                                            SupabaseOrderClient.INSTANCE.setOrder(OrderSet("Доставка", json, profileId?.id, price.value, currentDate))
+                                        }
+                                        catch (e: Exception) {
+                                            e.printStackTrace()
+                                        }
+
                                     }
 
                                 },
