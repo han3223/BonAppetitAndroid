@@ -1,6 +1,5 @@
 package com.example.restaurantandroid.ui.screens
 
-import android.app.Application
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -26,10 +25,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import androidx.compose.material.Snackbar
+import androidx.compose.ui.res.stringResource
 import com.example.bonappetitandroid.MainActivity
 import com.example.bonappetitandroid.colorText
 import com.example.bonappetitandroid.dto.Profile
@@ -42,6 +42,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import android.view.View
 
 var forgotPassword = mutableStateOf(false)
 var logIn = mutableStateOf(true)
@@ -327,6 +328,7 @@ fun ForgotPassword() {
 
 @Composable
 fun LoginPage() {
+    val showSnackbar = remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -391,9 +393,9 @@ fun LoginPage() {
 
                         coroutineScope.launch {
                             try {
-                                val result = SupabaseProfileClient.INSTANCE.getProfileByEmail(email.value.text, password.value.text)
+                                val result = SupabaseProfileClient.INSTANCE.getProfileByEmail(email.value.text)
                                 if (result == null) {
-                                    println("Такого пользователя не существует")
+                                    showSnackbar.value = true
                                 }
                                 else {
                                     profileLogin.value = ProfileRegistration(
@@ -409,9 +411,7 @@ fun LoginPage() {
                             catch (e: Exception) {
                                 e.printStackTrace()
                             }
-
                         }
-
                     },
                     shape = RoundedCornerShape(50.dp),
                     modifier = Modifier
@@ -423,6 +423,20 @@ fun LoginPage() {
                 ) {
                     Text(text = "Войти", color = Color.White)
                 }
+            }
+
+            if (showSnackbar.value) {
+                Snackbar(
+                    modifier = Modifier.padding(16.dp),
+                    action = {
+                        Button(onClick = { showSnackbar.value = false }) {
+                            Text(text = "OK")
+                        }
+                    },
+                    content = {
+                        Text(text = "Такой пользователь уже существует.")
+                    }
+                )
             }
 
             Spacer(modifier = Modifier.height(15.dp))
@@ -462,6 +476,7 @@ fun LoginPage() {
 @Composable
 fun SignUp() {
     val openDialog = remember { mutableStateOf(false) }
+    val showSnackbar = remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -481,9 +496,10 @@ fun SignUp() {
             val username = remember {
                 mutableStateOf(TextFieldValue())
             }
-            val phoneNumber = remember {
+            var phoneNumber = remember {
                 mutableStateOf(TextFieldValue())
             }
+
 //            Email
             val email = remember {
                 mutableStateOf(TextFieldValue())
@@ -591,7 +607,7 @@ fun SignUp() {
                                 profile.value = true
                             }
                             else {
-                                println("Такой пользователь уже существует")
+                                showSnackbar.value = true
                             }
                             println(result)
                         }
@@ -608,6 +624,21 @@ fun SignUp() {
                     Text(text = "Зарегистрироваться", color = Color.White)
                 }
             }
+
+            if (showSnackbar.value) {
+                Snackbar(
+                    modifier = Modifier.padding(16.dp),
+                    action = {
+                        Button(onClick = { showSnackbar.value = false }) {
+                            Text(text = "OK")
+                        }
+                    },
+                    content = {
+                        Text(text = "Такой пользователь уже существует.")
+                    }
+                )
+            }
+
             ClickableText(
                 text = AnnotatedString("Войти"),
                 modifier = Modifier
@@ -626,31 +657,6 @@ fun SignUp() {
         }
     }
 }
-
-//private fun formatPhoneNumber(number: String): String {
-//    val digitsOnly = number.filter { it.isDigit() }
-//    val formattedNumber = buildString {
-//        append("+7 ")
-//        if (digitsOnly.length >= 1) {
-//            append("(")
-//            append(digitsOnly.take(3))
-//        }
-//        if (digitsOnly.length >= 4) {
-//            append(") ")
-//            append(digitsOnly.substring(3, 6))
-//        }
-//        if (digitsOnly.length >= 7) {
-//            append("-")
-//            append(digitsOnly.substring(6, 8))
-//        }
-//        if (digitsOnly.length >= 9) {
-//            append("-")
-//            append(digitsOnly.substring(8, 10))
-//        }
-//    }
-//    return formattedNumber
-//}
-
 suspend fun registration(username: String, telephoneNumber: String, email: String, password: String) {
     SupabaseProfileClient.INSTANCE.addProfileWithoutAddress(ProfileRegistrationWithoutRoleAndAddress(username, telephoneNumber, email, password))
 }

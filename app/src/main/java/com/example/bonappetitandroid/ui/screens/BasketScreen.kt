@@ -47,7 +47,7 @@ var price = mutableStateOf(0)
 @Composable
 fun BasketScreen() {
     var expanded by remember { mutableStateOf(false) }
-    val orderList = mutableListOf<FoodWithoutIcon>()
+    var orderList = mutableListOf<FoodWithoutIcon>()
     AnimatedVisibility(visible = basket.value, enter = fadeIn(), exit = fadeOut()) {
         Column(
             modifier = Modifier
@@ -270,10 +270,12 @@ fun BasketScreen() {
                                             val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
                                             val currentDate = sdf.format(Date())
                                             SupabaseOrderClient.INSTANCE.setOrder(OrderSet("Доставка", json, profileId?.id, price.value, currentDate))
+                                            orderList = mutableListOf()
                                         }
                                         catch (e: Exception) {
                                             e.printStackTrace()
                                         }
+
 
                                     }
 
