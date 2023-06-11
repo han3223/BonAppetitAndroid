@@ -7,7 +7,6 @@ plugins {
 }
 apply plugin: 'com.google.devtools.ksp'
 
-
 android {
     namespace 'com.example.linguaflow'
     compileSdk 33
@@ -50,7 +49,6 @@ android {
         }
     }
 }
-
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.9.0'
@@ -76,7 +74,11 @@ dependencies {
     implementation "io.insert-koin:koin-annotations:$koin_ksp_version"
     ksp "io.insert-koin:koin-ksp-compiler:$koin_ksp_version"
 
+    implementation("com.github.amirisback:jitpack-library-kotlin-dsl-guide:1.0.1")
 
+
+    implementation 'com.redmadrobot:input-mask-android:7.2.4'
+//    implementation "com.github.jmarti-theinit:MaskedEditText:0.1.2"
     //ktor
     implementation "io.ktor:ktor-client-android:$ktor_version"
     implementation "io.ktor:ktor-client-core:$ktor_version"

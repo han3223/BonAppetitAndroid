@@ -1,11 +1,14 @@
 package com.example.restaurantandroid.ui.screens
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -23,26 +26,29 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.input.*
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import androidx.compose.material.Snackbar
-import androidx.compose.ui.res.stringResource
-import com.example.bonappetitandroid.MainActivity
-import com.example.bonappetitandroid.colorText
+import com.example.bonappetitandroid.dto.OrderGet
 import com.example.bonappetitandroid.dto.Profile
 import com.example.bonappetitandroid.dto.ProfileRegistration
 import com.example.bonappetitandroid.dto.ProfileRegistrationWithoutRoleAndAddress
-import com.example.linguaflow.R
+import com.example.bonappetitandroid.home
 import com.example.bonappetitandroid.profile
 import com.example.bonappetitandroid.repository.client.SupabaseProfileClient
+import com.example.linguaflow.R
+import com.redmadrobot.inputmask.MaskedTextChangedListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import android.view.View
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import org.koin.core.context.GlobalContext
 
 var forgotPassword = mutableStateOf(false)
 var logIn = mutableStateOf(true)
@@ -50,12 +56,15 @@ var signUp = mutableStateOf(false)
 val coroutineScope = CoroutineScope(Dispatchers.Main)
 val profileLogin = mutableStateOf<ProfileRegistration>(
     ProfileRegistration(
-    "", "", "", "", "", ""
+        "", "", "", "", "", ""
+    )
 )
-)
+
+var orders = mutableStateListOf<OrderGet>()
 
 @Composable
 fun ProfileScreen() {
+    val sharedPreferences = LocalContext.current.getSharedPreferences("Restaurant", 0)
     AnimatedVisibility(visible = profile.value, enter = fadeIn(), exit = fadeOut()) {
         Column(
             modifier = Modifier
@@ -92,7 +101,12 @@ fun ProfileScreen() {
 
             }
 
-            if (forgotPassword.value)
+            val str = sharedPreferences.getString("profile", "null").toString()
+            if (str != "null") {
+                profileLogin.value = Json.decodeFromString<ProfileRegistration>(str)
+                println(profileLogin.value.FIO)
+                Profile()
+            } else if (forgotPassword.value)
                 ForgotPassword()
             else if (logIn.value)
                 LoginPage()
@@ -101,11 +115,14 @@ fun ProfileScreen() {
             else
                 Profile()
 
+
         }
     }
 }
+
 @Composable
 fun Profile() {
+    val sharedPreferences = LocalContext.current.getSharedPreferences("Restaurant", 0)
     val firstName = profileLogin.value.FIO.split(" ")
     Box(
         modifier = Modifier
@@ -116,6 +133,22 @@ fun Profile() {
     ) {
         Box(modifier = Modifier.width(300.dp)) {
             Column() {
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            sharedPreferences.edit().remove("profile").apply()
+                            profile.value = false
+                            logIn.value = false
+                            logIn.value = true
+                            profile.value = true
+                        }
+                    },
+                    modifier = Modifier.size(30.dp),
+                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.White),
+
+                ) {
+                    Text("x")
+                }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -146,11 +179,12 @@ fun Profile() {
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "Телефон: ${profileLogin.value.telephoneNumber}",
-                        color = Color.Cyan,
+                    Text(
+                        text = "Телефон: ${profileLogin.value.telephoneNumber}",
+                        color = Color.White,
                         fontSize = 6.em,
 
-                    )
+                        )
                     print(profileLogin.value.telephoneNumber)
                 }
                 Row(modifier = Modifier.fillMaxWidth()) {
@@ -219,29 +253,33 @@ fun Profile() {
                     alignment = Alignment.Center,
                     contentScale = ContentScale.FillBounds
                 )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(30.dp, 120.dp)
-                        .padding(0.dp, 5.dp, 0.dp, 0.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "12 фев. 2023 г. 18:32",
-                        color = Color.White,
-                        fontSize = 4.em,
-                    )
-                    Text(
-                        text = "1780 ₽",
-                        color = Color.White,
-                        fontSize = 4.em,
-                    )
-                    Text(
-                        text = "Посмотреть",
-                        color = Color.White,
-                        fontSize = 4.em,
-                        textDecoration = TextDecoration.Underline
-                    )
+                orders.forEach {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(30.dp, 120.dp)
+                            .padding(0.dp, 5.dp, 0.dp, 0.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+
+                        Text(
+                            text = it.date,
+                            color = Color.White,
+                            fontSize = 4.em,
+                        )
+                        Text(
+                            text = "${it.price} ₽",
+                            color = Color.White,
+                            fontSize = 4.em,
+                        )
+                        Text(
+                            text = "Посмотреть",
+                            color = Color.White,
+                            fontSize = 4.em,
+                            textDecoration = TextDecoration.Underline
+                        )
+                    }
+
                 }
             }
         }
@@ -328,6 +366,7 @@ fun ForgotPassword() {
 
 @Composable
 fun LoginPage() {
+    val sharedPreferences = LocalContext.current.getSharedPreferences("Restaurant", 0)
     val showSnackbar = remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
@@ -381,7 +420,7 @@ fun LoginPage() {
                     textColor = Color.White
                 ),
                 onValueChange = { password.value = it },
-                visualTransformation =  PasswordVisualTransformation(),
+                visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
             )
 
@@ -393,22 +432,24 @@ fun LoginPage() {
 
                         coroutineScope.launch {
                             try {
-                                val result = SupabaseProfileClient.INSTANCE.getProfileByEmail(email.value.text)
+                                val result =
+                                    SupabaseProfileClient.INSTANCE.getProfileByEmail(email.value.text)
                                 if (result == null) {
                                     showSnackbar.value = true
-                                }
-                                else {
-                                    profileLogin.value = ProfileRegistration(
+                                } else {
+                                    val profileObject = ProfileRegistration(
                                         result.FIO,
                                         result.telephoneNumber,
                                         result.email, result.password,
                                         result.role,
-                                        result.address?: "")
+                                        result.address ?: ""
+                                    )
+                                    val json = Json.encodeToString(profileObject)
+                                    sharedPreferences.edit().putString("profile", json).apply()
                                     profile.value = true
                                     logIn.value = false
                                 }
-                            }
-                            catch (e: Exception) {
+                            } catch (e: Exception) {
                                 e.printStackTrace()
                             }
                         }
@@ -475,6 +516,8 @@ fun LoginPage() {
 
 @Composable
 fun SignUp() {
+    val sharedPreferences = LocalContext.current.getSharedPreferences("Restaurant", 0)
+
     val openDialog = remember { mutableStateOf(false) }
     val showSnackbar = remember { mutableStateOf(false) }
     Box(
@@ -535,6 +578,7 @@ fun SignUp() {
 
             Spacer(modifier = Modifier.height(15.dp))
 
+
             TextField(
 
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
@@ -575,7 +619,7 @@ fun SignUp() {
                     textColor = Color.White
                 ),
                 onValueChange = { password.value = it },
-                visualTransformation =  PasswordVisualTransformation(),
+                visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
             )
 
@@ -598,15 +642,35 @@ fun SignUp() {
                 Button(
                     onClick = {
                         coroutineScope.launch {
-                            val result = SupabaseProfileClient.INSTANCE.getProfileByEmail(email.value.text)
+                            val result =
+                                SupabaseProfileClient.INSTANCE.getProfileByEmail(email.value.text)
                             if (result == null) {
-                                registration(username.value.text, phoneNumber.value.text, email.value.text, password.value.text)
-                                profileLogin.value = ProfileRegistration(username.value.text, phoneNumber.value.text, email.value.text, password.value.text, "", "")
+                                val profileObject = ProfileRegistration(
+                                    username.value.text,
+                                    phoneNumber.value.text,
+                                    email.value.text,
+                                    password.value.text,
+                                    "user",
+                                    ""
+                                )
+                                SupabaseProfileClient.INSTANCE.setProfile(
+                                    profileObject
+                                )
+                                val json = Json.encodeToString(profileObject)
+                                sharedPreferences.edit().putString("profile", json).apply()
+
+                                profileLogin.value = ProfileRegistration(
+                                    username.value.text,
+                                    phoneNumber.value.text,
+                                    email.value.text,
+                                    password.value.text,
+                                    "",
+                                    ""
+                                )
                                 signUp.value = false
                                 logIn.value = false
                                 profile.value = true
-                            }
-                            else {
+                            } else {
                                 showSnackbar.value = true
                             }
                             println(result)
@@ -657,8 +721,21 @@ fun SignUp() {
         }
     }
 }
-suspend fun registration(username: String, telephoneNumber: String, email: String, password: String) {
-    SupabaseProfileClient.INSTANCE.addProfileWithoutAddress(ProfileRegistrationWithoutRoleAndAddress(username, telephoneNumber, email, password))
+
+suspend fun registration(
+    username: String,
+    telephoneNumber: String,
+    email: String,
+    password: String
+) {
+    SupabaseProfileClient.INSTANCE.addProfileWithoutAddress(
+        ProfileRegistrationWithoutRoleAndAddress(
+            username,
+            telephoneNumber,
+            email,
+            password
+        )
+    )
 }
 
 suspend fun loginUser(email: String, password: String) {
@@ -669,7 +746,9 @@ suspend fun showProfile() {
 
 }
 
+
 @Composable
 private fun MakeText() {
     Toast.makeText(LocalContext.current, "Пользователя не существует", Toast.LENGTH_LONG).show()
 }
+

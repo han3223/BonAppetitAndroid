@@ -32,6 +32,8 @@ import com.example.bonappetitandroid.dto.OrderSet
 import com.example.bonappetitandroid.dto.Profile
 import com.example.bonappetitandroid.repository.client.SupabaseOrderClient
 import com.example.bonappetitandroid.repository.client.SupabaseProfileClient
+import com.example.repository.client.SupabaseFoodClient
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -40,14 +42,15 @@ import java.util.*
 
 val buttonHall = mutableStateOf(R.color.button_price)
 val buttonDelivery = mutableStateOf(R.color.white)
-val order = mutableListOf<Eat>()
+var order = mutableListOf<Eat>()
 var price = mutableStateOf(0)
+var select = mutableStateOf("В зале")
 
 @SuppressLint("SimpleDateFormat")
 @Composable
 fun BasketScreen() {
     var expanded by remember { mutableStateOf(false) }
-    var orderList = mutableListOf<FoodWithoutIcon>()
+    var orderList = mutableListOf<com.example.bonappetitandroid.dto.Food>()
     AnimatedVisibility(visible = basket.value, enter = fadeIn(), exit = fadeOut()) {
         Column(
             modifier = Modifier
@@ -113,6 +116,7 @@ fun BasketScreen() {
                                         onClick = {
                                             buttonHall.value = R.color.button_price
                                             buttonDelivery.value = R.color.white
+                                            select.value = "В зале"
                                         },
                                         modifier = Modifier
                                             .fillMaxWidth(0.5f),
@@ -130,6 +134,7 @@ fun BasketScreen() {
                                         onClick = {
                                             buttonDelivery.value = R.color.button_price
                                             buttonHall.value = R.color.white
+                                            select.value = "Доставка"
                                         },
                                         modifier = Modifier
                                             .fillMaxWidth(),
@@ -138,7 +143,10 @@ fun BasketScreen() {
                                             backgroundColor = colorResource(buttonDelivery.value)
                                         )
                                     ) {
-                                        Text(text = "Доставка", color = colorResource(buttonHall.value))
+                                        Text(
+                                            text = "Доставка",
+                                            color = colorResource(buttonHall.value)
+                                        )
                                     }
                                 }
                                 Box {
@@ -195,7 +203,11 @@ fun BasketScreen() {
                                 // Заказ
                                 if (order.isNotEmpty()) {
                                     order.forEachIndexed { index, item ->
-                                        orderList.add(FoodWithoutIcon(item.route, item.title, item.description, item.calories, item.price, item.num))
+                                        coroutineScope.launch {
+                                            val food =
+                                                SupabaseFoodClient.INSTANCE.getFoodByTitle(item.title!!)
+                                            orderList.add(food)
+                                        }
                                         Spacer(modifier = Modifier.size(15.dp))
                                         Column(
                                             modifier = Modifier
@@ -262,23 +274,54 @@ fun BasketScreen() {
                                     coroutineScope.launch {
                                         try {
                                             val json = Json.encodeToString(orderList)
-                                            println("АААААААААААААААААААААААА\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
                                             println(profileLogin)
                                             println(json)
-                                            val profileId = SupabaseProfileClient.INSTANCE.getProfileByEmail(profileLogin.value.email)
+                                            val profileId =
+                                                SupabaseProfileClient.INSTANCE.getProfileByEmail(
+                                                    profileLogin.value.email
+                                                )
 
                                             val sdf = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
                                             val currentDate = sdf.format(Date())
-                                            SupabaseOrderClient.INSTANCE.setOrder(OrderSet("Доставка", json, profileId?.id, price.value, currentDate))
-                                            orderList = mutableListOf()
-                                        }
-                                        catch (e: Exception) {
+                                            SupabaseOrderClient.INSTANCE.setOrder(
+                                                OrderSet(
+                                                    select.value,
+                                                    json,
+                                                    profileId?.id,
+                                                    price.value,
+                                                    currentDate,
+                                                    profileId?.address ?: ""
+                                                )
+                                            )
+
+                                            for (index in 0..order.lastIndex) {
+                                                countEat[index] = order[index].num!!
+                                                price.value = price.value
+
+                                                order[index].num = 0
+                                                price.value -= (countEat[index] * order[index].price!!)
+                                                countEat[index] = order[index].num!!
+                                                if (order[index].num == 0) {
+                                                    order.remove(order[index])
+                                                }
+                                            }
+
+                                            val profile =
+                                                SupabaseProfileClient.INSTANCE.getProfileByEmail(
+                                                    profileLogin.value.email,
+                                                    profileLogin.value.password
+                                                )
+                                            if (profile != null) {
+                                                SupabaseOrderClient.INSTANCE.getOrderByProfile(
+                                                    profile.id!!
+                                                ).forEach {
+                                                    orders.add(it)
+                                                }
+                                            }
+                                        } catch (e: Exception) {
                                             e.printStackTrace()
                                         }
-
-
                                     }
-
                                 },
                                 shape = RoundedCornerShape(8.dp),
                                 colors = ButtonDefaults.buttonColors(
